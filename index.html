@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chicken Invaders Arcade & Wallet</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">🐔 Chicken Invaders Arcade</div>
+    <div class="money-panel" id="money-panel">
+      <div class="balance-display">
+        <span>Balance:</span>
+        <strong id="balance-display">$0.00</strong>
+      </div>
+      <button id="withdraw-btn" class="money-btn withdraw-btn">Withdraw</button>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="login.html" id="login-link">Login</a>
+      <button id="logout-btn" class="hidden">Logout</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1 id="greeting">Welcome to Chicken Invaders!</h1>
+      <p>5-Phase Epic Waves, Mini-Bosses, Power-ups, and Cash Rewards!</p>
+    </section>
+
+    <!-- Game Section -->
+    <section class="game-section">
+      <div class="game-header-stats">
+        <div>Score: <span id="stat-score">0</span></div>
+        <div>Wave: <span id="stat-wave">1</span></div>
+        <div>Phase: <span id="stat-phase">1 / 5</span></div>
+        <div>Lives: <span id="stat-lives">❤️ ❤️ ❤️</span></div>
+      </div>
+      
+      <div class="canvas-container">
+        <canvas id="gameCanvas" width="800" height="500"></canvas>
+        <div id="game-overlay" class="game-overlay">
+          <h2>CHICKEN INVADERS</h2>
+          <p>Hold <strong>Spacebar</strong> or <strong>Mouse Click</strong> for continuous firing.</p>
+          <p>Clear all 5 phases per wave to earn cash rewards and face Mini-Bosses!</p>
+          <button id="start-game-btn" class="arcade-btn">START GAME</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Wave Complete Modal -->
+  <div id="wave-complete-modal" class="modal hidden">
+    <div class="modal-content wave-complete-content">
+      <h2>🎉 CONGRATULATIONS!</h2>
+      <p id="wave-reward-msg">You conquered all 5 phases of this wave!</p>
+      <div class="reward-box">
+        <span>Cash Earned:</span>
+        <strong id="wave-reward-amount">$5.00</strong>
+      </div>
+      <button id="next-wave-btn" class="arcade-btn">PLAY NEXT WAVE</button>
+    </div>
+  </div>
+
+  <!-- Withdraw Modal -->
+  <div id="withdraw-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Withdraw Funds</h3>
+      <p>Enter amount to withdraw from your balance:</p>
+      <input type="number" id="withdraw-input" placeholder="Amount to withdraw ($)" min="1" step="any" />
+      <div id="withdraw-msg" class="message"></div>
+      <div class="modal-actions">
+        <button id="confirm-withdraw" class="btn-primary">Withdraw</button>
+        <button id="cancel-withdraw" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Chicken Invaders Arcade &mdash; All Rights Reserved</p>
+  </footer>
+
+  <script src="index.js"></script>
+</body>
+</html>

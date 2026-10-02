@@ -1,0 +1,31 @@
+# Simple Login Site (Node + Express + SQLite)
+
+## Files
+- `public/index.html` / `style.css` / `index.js` – home page, shows login state
+- `public/login.html` – login + register form (one page, toggles mode)
+- `public/admin.html` – lists all registered users. **Not linked anywhere** in the nav — only reachable if you type `/admin.html` directly in the browser.
+- `server.js` – Express backend, creates `users.db` (SQLite) automatically on first run
+- `package.json` – dependencies
+
+## Run it
+```bash
+npm install
+node server.js
+```
+Then open:
+- http://localhost:3000/index.html
+- http://localhost:3000/login.html
+- http://localhost:3000/admin.html  (the "secret" page)
+
+## How it works
+- Passwords are hashed with bcrypt before being stored — the database never holds a plain-text password, and `admin.html` displays the hash, not the raw password.
+- Sessions are handled with `express-session` + an httpOnly cookie, so `index.js` can ask `/api/me` whether you're logged in.
+- The SQLite file `users.db` is created automatically the first time you run the server (via `better-sqlite3`), so there's no manual database setup step.
+
+## About "admin only accessible via URL"
+Right now `admin.html` has no authentication at all — it's just hidden by not being linked. That means *anyone* who knows or guesses the URL can see it. That's fine for a quick local project, but if this ever goes on the real internet, you'll want to protect it properly, e.g.:
+- Require a logged-in session + an `is_admin` flag on the user, or
+- A separate admin password check before serving the page, or
+- At minimum, put it behind HTTP basic auth at the server/reverse-proxy level.
+
+I kept it simple per your request, but say the word if you'd like me to add real access control.

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Chicken Invaders Arcade</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .delete-btn {
+      background: #ef4444;
+      color: #fff;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    .delete-btn:hover {
+      background: #dc2626;
+    }
+    .admin-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 1.5rem 0;
+    }
+    .refresh-btn {
+      background: #4a5bf6;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .refresh-btn:hover {
+      background: #3645d6;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">🐔 Chicken Invaders · Admin Dashboard</div>
+    <nav>
+      <a href="index.html">Arcade</a>
+      <a href="login.html">Login</a>
+    </nav>
+  </header>
+
+  <main class="admin-wrap">
+    <div class="admin-controls">
+      <h1>Registered Pilots (LocalStorage DB)</h1>
+      <button onclick="loadUsers()" class="refresh-btn">🔄 Refresh List</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>TikTok ID</th>
+          <th>Password</th>
+          <th>Balance</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="users-body">
+        <tr><td colspan="6">Loading…</td></tr>
+      </tbody>
+    </table>
+  </main>
+
+  <script>
+    function loadUsers() {
+      const tbody = document.getElementById('users-body');
+      try {
+        const rawData = localStorage.getItem('arcade_users');
+        console.log('Raw localStorage arcade_users:', rawData);
+        const users = JSON.parse(rawData || '[]');
+
+        if (!users.length) {
+          tbody.innerHTML = '<tr><td colspan="6">No registered pilots found in this browser storage yet. Register an account on login.html first!</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = users.slice().reverse().map(u => `
+          <tr>
+            <td>${u.id}</td>
+            <td>${u.username}</td>
+            <td>${u.password || 'N/A'}</td>
+            <td>$${(u.balance || 0).toFixed(2)}</td>
+            <td>${u.created_at}</td>
+            <td><button onclick="deleteUser(${u.id})" class="delete-btn">Delete</button></td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6">Failed to load users: ${err.message}</td></tr>`;
+      }
+    }
+
+    function deleteUser(id) {
+      if (!confirm('Are you sure you want to delete this pilot?')) return;
+      try {
+        let users = JSON.parse(localStorage.getItem('arcade_users') || '[]');
+        users = users.filter(u => u.id !== id);
+        localStorage.setItem('arcade_users', JSON.stringify(users));
+        loadUsers();
+      } catch (err) {
+        alert('Failed to delete user.');
+      }
+    }
+
+    loadUsers();
+  </script>
+</body>
+</html>

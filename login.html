@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Chicken Invaders Arcade & Wallet</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Open Graph / Social Sharing Preview Meta Tags -->
+  <meta property="og:title" content="Chicken Invaders Arcade & Wallet - Win Up To $1,000!" />
+  <meta property="og:description" content="Play the ultimate retro space arcade game, defeat mini-bosses across 5-phase waves, and win up to $1,000!" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Chicken Invaders Arcade & Wallet - Win Up To $1,000!" />
+  <meta name="twitter:description" content="Play the ultimate retro space arcade game, defeat mini-bosses across 5-phase waves, and win up to $1,000!" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">🐔 Chicken Invaders Arcade</div>
+    <nav>
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <main class="auth-card">
+    <!-- Win Up to $1000 Promo Card Banner -->
+    <div class="promo-card">
+      <h3>🎉 WIN UP TO $1,000!</h3>
+      <p>Defend the galaxy, clear waves, and cash out your rewards!</p>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 1rem;">
+      <!-- TikTok Logo SVG -->
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="#111" style="display: inline-block; margin-bottom: 0.25rem;">
+        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+      </svg>
+      <h1 id="form-title" style="margin-bottom: 0.2rem;">TikTok ID Login</h1>
+      <p style="color: #64748b; font-size: 0.85rem;">
+        Log in with your TikTok ID to connect your wallet & play!
+      </p>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="auth-form">
+      <div>
+        <label for="username">TikTok ID / Username</label>
+        <input type="text" id="username" name="username" autocomplete="username" placeholder="Enter TikTok ID (3+ chars)" required />
+      </div>
+      <div>
+        <label for="password">Security Password</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Enter password (6+ chars)" required />
+      </div>
+      <button type="submit" id="submit-btn" class="arcade-btn" style="width: 100%; margin-top: 0.5rem; padding: 0.7rem; font-size: 1rem;">Log In with TikTok</button>
+    </form>
+
+    <p class="switch-mode">
+      <span id="switch-text">New pilot?</span>
+      <a id="switch-link">Create Account</a>
+    </p>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Chicken Invaders Arcade &mdash; All Rights Reserved</p>
+  </footer>
+
+  <script>
+    const form = document.getElementById('auth-form');
+    const title = document.getElementById('form-title');
+    const submitBtn = document.getElementById('submit-btn');
+    const switchText = document.getElementById('switch-text');
+    const switchLink = document.getElementById('switch-link');
+    const messageBox = document.getElementById('message');
+
+    let mode = 'login'; // or 'register'
+
+    function showMessage(text, type) {
+      messageBox.textContent = text;
+      messageBox.className = `message show ${type}`;
+    }
+
+    switchLink.addEventListener('click', () => {
+      mode = mode === 'login' ? 'register' : 'login';
+      messageBox.className = 'message';
+
+      if (mode === 'register') {
+        title.textContent = 'TikTok ID Registration';
+        submitBtn.textContent = 'Register Account';
+        switchText.textContent = 'Already have a TikTok ID?';
+        switchLink.textContent = 'Log In';
+      } else {
+        title.textContent = 'TikTok ID Login';
+        submitBtn.textContent = 'Log In with TikTok';
+        switchText.textContent = 'New pilot?';
+        switchLink.textContent = 'Create Account';
+      }
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        showMessage('Username and password are required.', 'error');
+        return;
+      }
+      if (username.length < 3 || password.length < 6) {
+        showMessage('Username must be 3+ chars and password 6+ chars.', 'error');
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem('arcade_users') || '[]');
+
+      if (mode === 'register') {
+        const existing = users.find(u => u.username === username);
+        if (existing) {
+          showMessage('That username is already taken.', 'error');
+          return;
+        }
+
+        const newUser = {
+          id: users.length > 0 ? Math.max(...users.map(u => u.id || 0)) + 1 : 1,
+          username,
+          password,
+          balance: 0.0,
+          created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
+        };
+
+        users.push(newUser);
+        localStorage.setItem('arcade_users', JSON.stringify(users));
+
+        showMessage('Account created successfully! Switching to login…', 'success');
+        setTimeout(() => switchLink.click(), 900);
+      } else {
+        const user = users.find(u => u.username === username && u.password === password);
+        if (!user) {
+          showMessage('Invalid username or password.', 'error');
+          return;
+        }
+
+        localStorage.setItem('arcade_current_user', username);
+        showMessage(`Welcome back, ${username}!`, 'success');
+        setTimeout(() => (window.location.href = 'index.html'), 700);
+      }
+    });
+  </script>
+</body>
+</html>
